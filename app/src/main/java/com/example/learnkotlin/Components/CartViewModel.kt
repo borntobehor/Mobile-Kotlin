@@ -33,12 +33,15 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
     val buyNowProduct = _buyNowProduct.asStateFlow()
 
     init {
-        // FIX 5: Load the cart from storage when the ViewModel is first created
         loadCart()
     }
 
     fun setBuyNowProduct(product: Product) {
         _buyNowProduct.value = product
+        if (_cartItems[product.id] == null) {
+            _cartItems[product.id] = CartItem(product, 1)
+            updateAndSave()
+        }
     }
 
     fun clearBuyNowProduct() {
@@ -70,7 +73,6 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun saveCart() {
-        // FIX 3: Get context via getApplication() provided by AndroidViewModel
         val prefs =
             getApplication<Application>().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val jsonObject = JSONObject()
@@ -84,7 +86,6 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         updateTotalPrice()
         saveCart()
     }
-
     fun addToCart(product: Product) {
         val existingItem = _cartItems[product.id]
         if (existingItem != null) {
@@ -104,8 +105,10 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         val item = _cartItems[product.id]
         if (item != null) {
             _cartItems[product.id] = item.copy(quantity = item.quantity + 1)
-            updateAndSave()
+        } else {
+            addToCart(product)
         }
+        updateAndSave()
     }
 
     fun decreaseQuantity(product: Product) {
@@ -113,7 +116,6 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         if (item != null) {
             if (item.quantity > 1) {
                 _cartItems[product.id] = item.copy(quantity = item.quantity - 1)
-                // FIX 4: Ensure save is called in all modification paths
                 updateAndSave()
             } else {
                 // If quantity is 1, decrease means removing the item

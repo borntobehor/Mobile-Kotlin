@@ -45,6 +45,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.ui.Alignment
+import coil.compose.rememberAsyncImagePainter
 import com.example.learnkotlin.Components.FavoriteViewModel
 import com.example.learnkotlin.Components.Product
 import com.example.learnkotlin.Components.CartViewModel
@@ -148,7 +149,7 @@ fun Products(
 //                            verticalArrangement = Arrangement.spacedBy(5.dp)
                         ) {
                             Image(
-                                painter = painterResource(id = product.image),
+                                painter = rememberAsyncImagePainter(model = product.image),
                                 contentDescription = product.name,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
@@ -269,7 +270,7 @@ fun ProductCard(product: Product, name: String) {
                 .height(150.dp),
         ) {
             Image(
-                painter = painterResource(id = product.image),
+                painter = rememberAsyncImagePainter(model = product.image),
                 contentDescription = product.name,
                 modifier = Modifier
                     .fillMaxWidth()

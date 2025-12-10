@@ -65,7 +65,9 @@ fun Cart(
         topBar = { BackAppBar(navController, "Cart", cartViewModel) },
         containerColor = Primary,
         bottomBar = {
-            CartSummary(totalPrice = totalPrice) {}
+            CartSummary(totalPrice = totalPrice) {
+                navController.navigate(Routes.PAYMENT)
+            }
         }
     ) { it ->
         if (cartItems.isEmpty()) {
@@ -204,6 +206,7 @@ fun CartItemRow(
 
 @Composable
 fun QuantitySelector(
+    modifier: Modifier = Modifier,
     quantity: Int,
     onIncrease: () -> Unit,
     onDecrease: () -> Unit,

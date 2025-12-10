@@ -69,6 +69,7 @@ val head = TextStyle(
     fontSize = 20.sp,
     color = Text,
 )
+
 @Composable
 fun Products(
     productList: List<Product> = listOf(),
@@ -129,6 +130,12 @@ fun Products(
                             .border(1.dp, Text, shape = CardDefaults.shape)
                             .shadow(
                                 elevation = 0.dp,
+                            )
+                            .clickable(
+                                onClick = {
+                                    cartViewModel.setBuyNowProduct(product)
+                                    navController.navigate(Routes.REVIEW_ORDER)
+                                }
                             ),
                         colors = CardDefaults.cardColors(
                             containerColor = Text,
@@ -150,11 +157,10 @@ fun Products(
                                     .clip(shape = CardDefaults.shape),
                             )
                             Spacer(Modifier.height(2.dp))
-                            Column (
+                            Column(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .padding(10.dp)
-                                ,
+                                    .padding(10.dp),
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Column() {
@@ -197,8 +203,7 @@ fun Products(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(start = 10.dp, end = 10.dp, bottom= 10.dp)
-                                ,
+                                    .padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween,
                             ) {
@@ -215,14 +220,12 @@ fun Products(
                                                 FavoriteViewModel.toggleFavorite(product)
                                             }
                                         )
-                                        .padding(5.dp)
-                                    ,
+                                        .padding(5.dp),
                                 )
                                 Button(
                                     modifier = Modifier
-                                        .defaultMinSize(1.dp, 1.dp)
-                                    ,
-                                    contentPadding = PaddingValues(20.dp, 8.dp),
+                                        .defaultMinSize(1.dp, 1.dp),
+                                    contentPadding = PaddingValues(16.dp, 8.dp),
                                     colors = ButtonDefaults.textButtonColors(
                                         containerColor = Primary,
                                         contentColor = Text
@@ -252,8 +255,7 @@ fun ProductCard(product: Product, name: String) {
         modifier = Modifier
 //            .fillMaxWidth()
             .width(175.dp)
-            .heightIn(min = 200.dp, max = 500.dp)
-        ,
+            .heightIn(min = 200.dp, max = 500.dp),
         colors = CardDefaults.cardColors(
             containerColor = Text
         ),
@@ -278,8 +280,7 @@ fun ProductCard(product: Product, name: String) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp)
-            ,
+                .padding(10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             if (product.name != "") {
@@ -287,13 +288,12 @@ fun ProductCard(product: Product, name: String) {
                     text = product.name,
                     style = title
                 )
-            }
-             else {
+            } else {
                 Text(
                     text = "No brand name",
                     style = title
                 )
-             }
+            }
             HorizontalDivider(thickness = 1.dp, color = Primary)
             if (product.description != "") {
                 Text(
@@ -320,7 +320,7 @@ fun ProductCard(product: Product, name: String) {
                 )
             }
             if (name == "Favorites") {
-                Button (
+                Button(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.textButtonColors(
                         containerColor = Primary,
@@ -332,12 +332,11 @@ fun ProductCard(product: Product, name: String) {
                 ) {
                     Text(text = "Remove Favorite")
                 }
-            } else if(name == "All Products" || name == "Search") {
+            } else if (name == "All Products" || name == "Search") {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
 //                        .padding(start = 10.dp, end = 10.dp, bottom= 10.dp)
-                    ,
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
@@ -354,13 +353,11 @@ fun ProductCard(product: Product, name: String) {
                                     FavoriteViewModel.toggleFavorite(product)
                                 }
                             )
-                            .padding(5.dp)
-                        ,
+                            .padding(5.dp),
                     )
                     Button(
                         modifier = Modifier
-                            .defaultMinSize(1.dp, 1.dp)
-                        ,
+                            .defaultMinSize(1.dp, 1.dp),
                         contentPadding = PaddingValues(20.dp, 8.dp),
                         colors = ButtonDefaults.textButtonColors(
                             containerColor = Primary,

@@ -28,9 +28,21 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
     private val _totalPrice = MutableStateFlow(0.0)
     val totalPrice = _totalPrice.asStateFlow()
 
+    // Single-product "Buy Now" flow holder
+    private val _buyNowProduct = MutableStateFlow<Product?>(null)
+    val buyNowProduct = _buyNowProduct.asStateFlow()
+
     init {
         // FIX 5: Load the cart from storage when the ViewModel is first created
         loadCart()
+    }
+
+    fun setBuyNowProduct(product: Product) {
+        _buyNowProduct.value = product
+    }
+
+    fun clearBuyNowProduct() {
+        _buyNowProduct.value = null
     }
 
     private fun loadCart() {

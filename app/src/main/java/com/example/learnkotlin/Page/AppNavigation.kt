@@ -19,6 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
+import com.example.learnkotlin.Components.CartItem
 import com.example.learnkotlin.Components.CartViewModel
 import com.example.learnkotlin.Login.AuthViewModel
 import com.example.learnkotlin.Page.Routes.AUTH_GRAPH
@@ -127,6 +128,12 @@ fun NavGraphBuilder.mainAppGraph(navController: NavController, onLogout: () -> U
         }
         composable(Routes.CART) {
             Cart(navController = navController, cartViewModel = cartViewModel)
+        }
+        composable(Routes.REVIEW_ORDER) {
+            ReviewOrderScreen(navController = navController, cartViewModel = cartViewModel)
+        }
+        composable(Routes.PAYMENT) {
+            PaymentScreen(navController = navController, cartViewModel = cartViewModel)
         }
     }
 }

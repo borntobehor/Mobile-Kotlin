@@ -15,4 +15,8 @@ object Routes {
     const val OTP = "otp_screen"
     const val SEARCH = "search_screen"
     const val CART = "cart_screen"
+
+    // Checkout flow
+    const val REVIEW_ORDER = "review_order_screen"
+    const val PAYMENT = "payment_screen"
 }

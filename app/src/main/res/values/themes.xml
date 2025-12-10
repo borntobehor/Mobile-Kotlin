@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.MySplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/Primary</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/a1</item>
+        <item name="postSplashScreenTheme">@style/Theme.LearnKotlin</item>
+    </style>
+    <style name="Theme.LearnKotlin" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>

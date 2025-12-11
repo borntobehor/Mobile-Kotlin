@@ -51,6 +51,7 @@ fun AppNavigation() {
     NavHost(
         navController = navController,
         startDestination = if (isLoggedIn) MAIN_APP_GRAPH else AUTH_GRAPH
+//        startDestination = MAIN_APP_GRAPH
     ) {
 
         authGraph(navController, authViewModel)

@@ -66,6 +66,9 @@ fun Cart(
         containerColor = Primary,
         bottomBar = {
             CartSummary(totalPrice = totalPrice) {
+                if (cartItems.isEmpty()) {
+                    return@CartSummary
+                }
                 navController.navigate(Routes.PAYMENT)
             }
         }

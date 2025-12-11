@@ -40,7 +40,9 @@ fun LoginScreen(
     val context = LocalContext.current.applicationContext
 
     Column(
-        modifier = Modifier.fillMaxSize().background(Primary),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Primary),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

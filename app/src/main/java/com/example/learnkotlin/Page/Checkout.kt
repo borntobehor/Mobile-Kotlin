@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -56,6 +57,22 @@ fun ReviewOrderScreen(
 
     Scaffold(
         topBar = { BackAppBar(navController, "Review", cartViewModel) },
+        bottomBar = {
+            Button(
+                onClick = { navController.navigate(Routes.PAYMENT) },
+                modifier = Modifier
+                    .padding(horizontal = 20.dp, vertical = 30.dp)
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = TextColor,
+                    contentColor = Primary
+                ),
+                contentPadding = PaddingValues(15.dp)
+            ) {
+                Text(text = "Proceed to Payment", fontSize = 18.sp)
+            }
+        },
         containerColor = Primary
     ) { paddingValues ->
         val product = product
@@ -84,14 +101,14 @@ fun ReviewOrderScreen(
 //        val p: Product = product!!
         val cartItemForThisProduct = cartItems[product.id]
         val quantity = cartItemForThisProduct?.quantity ?: 1
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(20.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column {
+            item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = TextColor),
@@ -238,19 +255,6 @@ fun ReviewOrderScreen(
                 }
             }
 
-            Button(
-                onClick = { navController.navigate(Routes.PAYMENT) },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = TextColor,
-                    contentColor = Primary
-                ),
-                contentPadding = PaddingValues(15.dp)
-            ) {
-                Text(text = "Proceed to Payment", fontSize = 18.sp)
-            }
         }
     }
 }

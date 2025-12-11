@@ -56,28 +56,28 @@ val productCatalog: Map<String, Map<String, List<Product>>> = mapOf(
     ),
     "Eau de Parfum (EDP)" to mapOf(
         "Popular" to listOf(
-            Product(id = 13,"Yves Saint Laurent", 150.00, 100, "", R.drawable.popular_5),
-            Product(id = 14,"GUCCI", 99.00, 75, "Gucci Bloom", R.drawable.popular_6),
+            Product(id = 19,"Coach", 150.00, 100, "Miss Dior Blooming Bouquet", R.drawable.popular_7),
+            Product(id = 20,"Lattafa", 99.00, 75, "Yara", R.drawable.popular_8),
         ), "New Arrivals" to listOf(
-            Product(id = 15,"Dior", 150.00, 100, "JOY Dior", R.drawable.new_2),
-            Product(id = 16,"GUCCI", 150.00, 100, "Flora G.G", R.drawable.new_4),
+            Product(id = 21,"Prada", 150.00, 100, "Paradoxe 'Virtual Flower'", R.drawable.new_7),
+            Product(id = 22,"Maison Alhambra", 150.00, 100, "Salvo Eau De Parfum", R.drawable.new_8),
         ), "All Products" to listOf(
-            Product(id = 17,"Versace", 180.00, 100, "Bright Crystal", R.drawable.all_1),
-            Product(id = 18,"", 150.00, 75, "Miss Dior ", R.drawable.new_2),
+            Product(id = 23,"Gucci", 180.00, 100, "Gucci Guilty Pour Femme (Eau De Parfum)", R.drawable.all_7),
+            Product(id = 24,"Marc Jacobs", 150.00, 75, "Daisy Eau De Toilette", R.drawable.all_8),
         )
     ),
     "Unisex Fragrance" to mapOf(
         "Popular" to listOf(
-            Product(id = 13,"Yves Saint Laurent", 150.00, 100, "", R.drawable.popular_5),
-            Product(id = 14,"GUCCI", 99.00, 75, "Gucci Bloom", R.drawable.popular_6),
+            Product(id = 25,"Coach", 150.00, 100, "Coach Blue Eau De Toilette", R.drawable.popular_9),
+            Product(id = 26,"GUCCI", 99.00, 75, "Gucci Bloom", R.drawable.popular_10),
         ), "New Arrivals" to listOf(
-            Product(id = 15,"Dior", 150.00, 100, "JOY Dior", R.drawable.new_2),
-            Product(id = 16,"GUCCI", 150.00, 100, "Flora G.G", R.drawable.new_4),
+            Product(id = 27,"Notez", 150.00, 100, "Sakura Perfume", R.drawable.new_9),
+            Product(id = 28,"Moschino", 150.00, 100, "Toy Boy (Eau De Parfum)", R.drawable.new_9),
         ), "All Products" to listOf(
-            Product(id = 17,"Versace", 180.00, 100, "Bright Crystal", R.drawable.all_1),
-            Product(id = 18,"", 150.00, 75, "Miss Dior ", R.drawable.new_2),
+            Product(id = 29,"Carolina Herrera", 180.00, 100, "Good Girl Very Glam Parfum", R.drawable.all_9),
+            Product(id = 30,"Carolina Herrera", 150.00, 75, "Bad Boy Extreme Eau De Parfum", R.drawable.all_10),
         )
-    )
+    ),
 )
 
 @Composable

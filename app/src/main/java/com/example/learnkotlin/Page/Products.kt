@@ -45,6 +45,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.rememberAsyncImagePainter
 import com.example.learnkotlin.Components.FavoriteViewModel
 import com.example.learnkotlin.Components.Product
@@ -376,4 +377,12 @@ fun ProductCard(product: Product, name: String) {
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun Banner(
+
+) {
+
 }

@@ -86,7 +86,7 @@ fun MainScreen(navController: NavController, onLogout: () -> Unit, cartViewModel
                             "Eau de Toilette (EDT)",
                             "Eau de Parfum (EDP)",
                             "Unisex Fragrance",
-                            "Parfum (Perfume)",
+//                            "Parfum (Perfume)",
                         )
                         items(listOfType) { typePerfume ->
                             TextButton(
@@ -117,7 +117,7 @@ fun MainScreen(navController: NavController, onLogout: () -> Unit, cartViewModel
                         "Eau de Toilette (EDT)",
                         "Eau de Parfum (EDP)",
                         "Unisex Fragrance",
-                        "Parfum (Perfume)",
+//                        "Parfum (Perfume)",
                     )
                     NavHost(
                         navController = internalNavController,
@@ -168,7 +168,7 @@ fun MainScreen(navController: NavController, onLogout: () -> Unit, cartViewModel
                             }
                             composable("Eau de Parfum (EDP)") {
                                 CategoryScreen(
-                                    categoryName = "Eau de Toilette (EDT)",
+                                    categoryName = "Eau de Parfum (EDP)",
                                     navController = navController,
                                     cartViewModel = cartViewModel
                                 )
@@ -180,8 +180,8 @@ fun MainScreen(navController: NavController, onLogout: () -> Unit, cartViewModel
                                     cartViewModel = cartViewModel
                                 )
                             }
-                            composable("Parfum (Perfume)") {
-                            }
+//                            composable("Parfum (Perfume)") {
+//                            }
                         }
                     }
                 }

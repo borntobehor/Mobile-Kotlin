@@ -86,7 +86,8 @@ fun ForgetPassword(
                         cursorColor = Text,
                         focusedBorderColor = Text,
                         unfocusedBorderColor = Text
-                    )
+                    ),
+                    singleLine = true
                 )
             }
 

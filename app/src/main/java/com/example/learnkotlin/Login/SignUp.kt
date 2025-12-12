@@ -82,7 +82,8 @@ fun SignUp(
                         cursorColor = Text,
                         focusedBorderColor = Text,
                         unfocusedBorderColor = Text
-                    )
+                    ),
+                    singleLine = true
                 )
             }
             Spacer(modifier = Modifier.height(7.dp))
@@ -106,7 +107,8 @@ fun SignUp(
                         cursorColor = Text,
                         focusedBorderColor = Text,
                         unfocusedBorderColor = Text
-                    )
+                    ),
+                    singleLine = true
                 )
             }
             Spacer(modifier = Modifier.height(7.dp))
@@ -130,7 +132,8 @@ fun SignUp(
                         cursorColor = Text,
                         focusedBorderColor = Text,
                         unfocusedBorderColor = Text
-                    )
+                    ),
+                    singleLine = true
                 )
             }
             Spacer(modifier = Modifier.height(38.dp))

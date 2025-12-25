@@ -37,7 +37,21 @@ fun LoginScreen(
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    val context = LocalContext.current.applicationContext
+    val ctx = LocalContext.current
+
+    val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
+    val loading by authViewModel.loading.collectAsState()
+    val error by authViewModel.error.collectAsState()
+
+    // Navigate when login state becomes true
+    LaunchedEffect(isLoggedIn) {
+        if (isLoggedIn) onLoginSuccess()
+    }
+
+    // Show errors as Toasts
+    LaunchedEffect(error) {
+        error?.let { Toast.makeText(ctx, it, Toast.LENGTH_SHORT).show() }
+    }
 
     Column(
         modifier = Modifier
@@ -85,6 +99,7 @@ fun LoginScreen(
                 fontSize = 16.sp
             )
             OutlinedTextField(
+                placeholder = {Text("Email")},
                 modifier = Modifier.fillMaxWidth(),
                 value = password,
                 onValueChange = { password = it },
@@ -113,13 +128,7 @@ fun LoginScreen(
 
         Button(
             onClick = {
-                if (authenticate(email, password)) {
-                    authViewModel.login()
-                    onLoginSuccess()
-                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(context, "Login Failed", Toast.LENGTH_SHORT).show()
-                }
+                authViewModel.login(email, password)
             },
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Text),
@@ -153,11 +162,5 @@ fun LoginScreen(
             )
         }
     }
-}
-
-private fun authenticate(username: String, password: String): Boolean {
-    val validUsername = "chu"
-    val validPassword = "chu123"
-    return username == validUsername && password == validPassword
 }
 

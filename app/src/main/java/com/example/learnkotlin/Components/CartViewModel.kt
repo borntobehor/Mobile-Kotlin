@@ -49,26 +49,18 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun loadCart() {
+        // Static catalog was removed. To avoid crashes while we transition the cart to API models,
+        // we no longer try to rebuild Product objects from stored IDs. For now, we clear the cart
+        // on app start if old data exists.
         val prefs =
             getApplication<Application>().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val jsonString = prefs.getString(CART_ITEMS_KEY, null)
-
         if (jsonString != null) {
-            val jsonObject = JSONObject(jsonString)
-            // Get a flat list of all products from your catalog to find items by ID
-            val allProducts = productCatalog.values.flatMap { it.values }.flatten()
-
-            jsonObject.keys().forEach { idString ->
-                val id = idString.toInt()
-                val quantity = jsonObject.getInt(idString)
-                // Find the full product object from the catalog
-                val product = allProducts.find { it.id == id }
-                if (product != null) {
-                    _cartItems[id] = CartItem(product, quantity)
-                }
-            }
+            // Previous format was a map of id -> quantity. We cannot resolve these to Product now.
+            // Clear legacy data to keep app stable.
+            prefs.edit().remove(CART_ITEMS_KEY).apply()
         }
-        // Update the total price after loading
+        _cartItems.clear()
         updateTotalPrice()
     }
 

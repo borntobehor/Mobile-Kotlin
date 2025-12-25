@@ -30,6 +30,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,8 +41,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.learnkotlin.Components.Product
-import com.example.learnkotlin.Components.productCatalog
+import com.example.learnkotlin.api.CatalogRepository
+import com.example.learnkotlin.api.PerfumeDto
 import com.example.learnkotlin.ui.theme.Primary
 import com.example.learnkotlin.ui.theme.Text
 import com.example.learnkotlin.ui.theme.White
@@ -51,19 +52,32 @@ import com.example.learnkotlin.ui.theme.White
 fun SearchScreen(onCloseClicked: () -> Unit) {
     var searchQuery by remember { mutableStateOf("") }
 
-    // Build a flat list of all products once
-    val allProducts: List<Product> = remember {
-        productCatalog.values.flatMap { it.values.flatten() }
+    val repo = remember { CatalogRepository() }
+    var allProducts by remember { mutableStateOf<List<PerfumeDto>>(emptyList()) }
+    var loading by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(Unit) {
+        loading = true
+        error = null
+        try {
+            allProducts = repo.getPerfumes()
+        } catch (e: Exception) {
+            error = e.message ?: "Failed to load products"
+        } finally {
+            loading = false
+        }
     }
 
     // Filter products based on the current query
-    val searchResults: List<Product> = remember(searchQuery) {
+    val searchResults: List<PerfumeDto> = remember(searchQuery, allProducts) {
         if (searchQuery.isBlank()) {
             emptyList()
         } else {
-            allProducts.filter { product ->
-                product.name.contains(searchQuery, ignoreCase = true) ||
-                        product.description.contains(searchQuery, ignoreCase = true)
+            allProducts.filter { p ->
+                p.name.contains(searchQuery, ignoreCase = true) ||
+                        (p.description ?: "").contains(searchQuery, ignoreCase = true) ||
+                        (p.brand ?: "").contains(searchQuery, ignoreCase = true)
             }
         }
     }
@@ -152,8 +166,31 @@ fun SearchScreen(onCloseClicked: () -> Unit) {
                         horizontalArrangement = Arrangement.spacedBy(20.dp),
                         verticalArrangement = Arrangement.spacedBy(20.dp) // Adds space between items
                     ) {
-                        items(searchResults) {product ->
-                            ProductCard(product, name = "Search")
+                        items(searchResults) { p ->
+                            androidx.compose.material3.Card(
+                                colors = androidx.compose.material3.CardDefaults.cardColors(containerColor = White.copy(alpha = 0.08f))
+                            ) {
+                                androidx.compose.foundation.layout.Column(
+                                    modifier = Modifier.padding(12.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    coil.compose.AsyncImage(
+                                        model = coil.request.ImageRequest.Builder(androidx.compose.ui.platform.LocalContext.current)
+                                            .data(p.imageUrl)
+                                            .crossfade(true)
+                                            .build(),
+                                        contentDescription = p.name,
+                                        contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(140.dp)
+                                    )
+                                    Spacer(modifier = Modifier.height(6.dp))
+                                    Text(text = p.name, color = White, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                                    val priceText = "$" + String.format("%.2f", p.price)
+                                    Text(text = priceText, color = White, fontSize = 12.sp)
+                                }
+                            }
                         }
                     }
 //                    LazyColumn(

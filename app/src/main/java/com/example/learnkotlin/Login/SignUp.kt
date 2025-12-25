@@ -38,12 +38,21 @@ import com.example.learnkotlin.ui.theme.White
 @Composable
 fun SignUp(
     onBackClicked: () -> Unit,
-    onSignUpSuccess: () -> Unit
+    onSignUpSuccess: () -> Unit,
+    authViewModel: com.example.learnkotlin.Login.AuthViewModel
 ) {
+    var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     val context = LocalContext.current
+
+    val loading by authViewModel.loading.collectAsState()
+    val error by authViewModel.error.collectAsState()
+
+    LaunchedEffect(error) {
+        error?.let { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
+    }
 
     // 4. Use a Box to layer the back button over the main content
     Box(modifier = Modifier.fillMaxSize()) {
@@ -62,6 +71,31 @@ fun SignUp(
             Text(text = "Enter your login details to", color = Text)
             Text(text = "access your account", color = Text)
             Spacer(modifier = Modifier.height(42.dp))
+
+            // Name TextField
+            Column(modifier = Modifier.padding(horizontal = 32.dp)) {
+                Text(
+                    text = "Name", modifier = Modifier.align(Alignment.Start),
+                    color = Text,
+                    fontSize = 16.sp
+                )
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text(text = "") },
+                    shape = RoundedCornerShape(15.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Text,
+                        unfocusedTextColor = Text,
+                        cursorColor = Text,
+                        focusedBorderColor = Text,
+                        unfocusedBorderColor = Text
+                    ),
+                    singleLine = true
+                )
+            }
+            Spacer(modifier = Modifier.height(7.dp))
 
             // Email TextField
             Column(modifier = Modifier.padding(horizontal = 32.dp)) {
@@ -142,16 +176,18 @@ fun SignUp(
             Button(
                 onClick = {
                     // 5. Add validation and navigation logic
-                    if (email.isNotBlank() && password.isNotBlank() && password == confirmPassword) {
-                        Toast.makeText(context, "Sign Up Successful!", Toast.LENGTH_SHORT).show()
-                        // This executes the navigation command from MainActivity
-                        onSignUpSuccess()
+                    if (name.isNotBlank() && email.isNotBlank() && password.isNotBlank() && password == confirmPassword) {
+                        authViewModel.register(name, email, password) {
+                            Toast.makeText(context, "Sign Up Successful!", Toast.LENGTH_SHORT).show()
+                            onSignUpSuccess()
+                        }
                     } else if (password != confirmPassword) {
                         Toast.makeText(context, "Passwords do not match.", Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(context, "Please fill all fields.", Toast.LENGTH_SHORT).show()
                     }
                 },
+                enabled = !loading, 
                 shape = RoundedCornerShape(15.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Text

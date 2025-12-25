@@ -35,25 +35,35 @@ import com.example.learnkotlin.SignUp
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    val authViewModel: AuthViewModel = viewModel()
+    val application = LocalContext.current.applicationContext as Application
+
+    // Create AndroidViewModel instances with the Application-aware factory
+    val authViewModel: AuthViewModel = viewModel(factory = ViewModelProvider.AndroidViewModelFactory.getInstance(application))
     val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
 
-
-    val application = LocalContext.current.applicationContext as Application
     // Provide a single CartViewModel instance tied to the NavHost scope so it persists and can access Application
     val cartViewModel: CartViewModel = androidx.lifecycle.viewmodel.compose.viewModel<CartViewModel>(factory = ViewModelProvider.AndroidViewModelFactory.getInstance(application))
+
     val onLogout: () -> Unit = {
         authViewModel.logout()
         navController.navigate(AUTH_GRAPH) {
             popUpTo(navController.graph.startDestinationId) { inclusive = true }
         }
     }
+
+    // If token expires or user logs out, send them back to the auth graph
+    androidx.compose.runtime.LaunchedEffect(isLoggedIn) {
+        if (!isLoggedIn) {
+            navController.navigate(AUTH_GRAPH) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+    }
+
     NavHost(
         navController = navController,
         startDestination = if (isLoggedIn) MAIN_APP_GRAPH else AUTH_GRAPH
-//        startDestination = MAIN_APP_GRAPH
     ) {
-
         authGraph(navController, authViewModel)
         mainAppGraph(navController, onLogout, cartViewModel)
     }
@@ -84,7 +94,8 @@ fun NavGraphBuilder.authGraph(navController: NavController, authViewModel: AuthV
                         }
                     }
                 },
-                onBackClicked = { navController.popBackStack() }
+                onBackClicked = { navController.popBackStack() },
+                authViewModel = authViewModel
             )
         }
         composable(Routes.FORGET_PASSWORD) {
@@ -114,7 +125,7 @@ fun NavGraphBuilder.mainAppGraph(navController: NavController, onLogout: () -> U
             MainScreen(navController = navController, onLogout = onLogout, cartViewModel = cartViewModel)
         }
         composable(Routes.ALL_PRODUCTS) {
-            AllProduct(navController = navController)
+            AllProduct(navController = navController, cartViewModel = cartViewModel)
         }
         composable(Routes.FAVORITES) {
             FavoritePage(navController = navController)

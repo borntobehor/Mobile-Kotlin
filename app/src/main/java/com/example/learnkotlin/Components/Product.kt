@@ -1,104 +1,171 @@
 package com.example.learnkotlin.Components
 
-import androidx.annotation.DrawableRes
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.learnkotlin.Page.Products
-import com.example.learnkotlin.R
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.example.learnkotlin.api.CatalogRepository
+import com.example.learnkotlin.api.GroupedCatalog
+import com.example.learnkotlin.api.PerfumeDto
+import com.example.learnkotlin.ui.theme.Primary
+import com.example.learnkotlin.ui.theme.White
 
+// Keep data class Product only if other screens reference it; otherwise it can be removed.
 data class Product(
     var id: Int,
     var name: String,
     var price: Double,
     var amount: Int,
     var description: String,
-    @DrawableRes var image: Int,
-//    var type: String
-)
-
-val productCatalog: Map<String, Map<String, List<Product>>> = mapOf(
-    "Men Fragrance" to mapOf(
-        "Popular" to listOf(
-            Product(id = 1,"Valentino", 99.00, 100, "Born in Roma Intense ", R.drawable.popular_1),
-            Product(id = 2,"Giorgio Armani", 99.00, 100, "Stronger With You", R.drawable.popular_2),
-        ), "New Arrivals" to listOf(
-            Product(id = 3,"Dior", 99.00, 100, "Sauvage", R.drawable.new_1),
-            Product(id = 4,"Chanel", 99.00, 100, "Bleu de Chanel", R.drawable.new_2),
-        ), "All Products" to listOf(
-            Product(id = 5,"Yves Saint Laurent", 99.00, 100, "Libre’s", R.drawable.all_1),
-            Product(id = 6,"Versace", 99.99, 100, "Eros", R.drawable.all_2),
-        )
-    ),
-    "Women Fragrance" to mapOf(
-        "Popular" to listOf(
-            Product(id = 7,"Yves Saint Laurent", 150.00, 100, "Libre’s ", R.drawable.popular_3),
-            Product(id = 8,"Chanel", 120.00, 100, "Chanel N.5 ", R.drawable.popular_4),
-        ), "New Arrivals" to listOf(
-            Product(id = 9,"Dior", 150.00, 100, "JOY Dior", R.drawable.new_2),
-            Product(id = 10,"GUCCI", 150.00, 100, "Flora G.G", R.drawable.new_4),
-        ), "All Products" to listOf(
-            Product(id = 11,"Versace", 180.00, 100, "Bright Crystal", R.drawable.all_3),
-            Product(id = 12,"Dior", 150.00, 75, "Miss Dior ", R.drawable.all_4),
-        )
-    ),
-    "Eau de Toilette (EDT)" to mapOf(
-        "Popular" to listOf(
-            Product(id = 13,"Yves Saint Laurent", 150.00, 100, "Marc Jacobs Daisy", R.drawable.popular_5),
-            Product(id = 14,"GUCCI", 99.00, 75, "Gucci Bloom", R.drawable.popular_6),
-        ), "New Arrivals" to listOf(
-            Product(id = 15,"Dior", 150.00, 100, "JOY Dior", R.drawable.new_5),
-            Product(id = 16,"", 150.00, 100, "Flora G.G", R.drawable.new_6),
-        ), "All Products" to listOf(
-            Product(id = 17,"Versace", 180.00, 100, "Bright Crystal", R.drawable.all_5),
-            Product(id = 18,"Dior", 150.00, 75, "Miss Dior ", R.drawable.all_6),
-        )
-    ),
-    "Eau de Parfum (EDP)" to mapOf(
-        "Popular" to listOf(
-            Product(id = 19,"Coach", 150.00, 100, "Miss Dior Blooming Bouquet", R.drawable.popular_7),
-            Product(id = 20,"Lattafa", 99.00, 75, "Yara", R.drawable.popular_8),
-        ), "New Arrivals" to listOf(
-            Product(id = 21,"Prada", 150.00, 100, "Paradoxe 'Virtual Flower'", R.drawable.new_7),
-            Product(id = 22,"Maison Alhambra", 150.00, 100, "Salvo Eau De Parfum", R.drawable.new_8),
-        ), "All Products" to listOf(
-            Product(id = 23,"Gucci", 180.00, 100, "Gucci Guilty Pour Femme (Eau De Parfum)", R.drawable.all_7),
-            Product(id = 24,"Marc Jacobs", 150.00, 75, "Daisy Eau De Toilette", R.drawable.all_8),
-        )
-    ),
-    "Unisex Fragrance" to mapOf(
-        "Popular" to listOf(
-            Product(id = 25,"Coach", 150.00, 100, "Coach Blue Eau De Toilette", R.drawable.popular_9),
-            Product(id = 26,"GUCCI", 99.00, 75, "Gucci Bloom", R.drawable.popular_10),
-        ), "New Arrivals" to listOf(
-            Product(id = 27,"Notez", 150.00, 100, "Sakura Perfume", R.drawable.new_9),
-            Product(id = 28,"Moschino", 150.00, 100, "Toy Boy (Eau De Parfum)", R.drawable.new_9),
-        ), "All Products" to listOf(
-            Product(id = 29,"Carolina Herrera", 180.00, 100, "Good Girl Very Glam Parfum", R.drawable.all_9),
-            Product(id = 30,"Carolina Herrera", 150.00, 75, "Bad Boy Extreme Eau De Parfum", R.drawable.all_10),
-        )
-    ),
+    @androidx.annotation.DrawableRes var image: Int,
 )
 
 @Composable
 fun CategoryScreen(categoryName: String, navController: NavController, cartViewModel: CartViewModel) {
-    // 1. Look up the data for the given category (e.g., "Men Fragrance")
-    val categoryProducts = productCatalog[categoryName] ?: emptyMap()
-    // 2. Get the specific lists from that data
-    val popularProducts = categoryProducts["Popular"] ?: emptyList()
-    val newArrivals = categoryProducts["New Arrivals"] ?: emptyList()
-    val allProducts = categoryProducts["All Products"] ?: emptyList()
+    val repo = remember { CatalogRepository() }
+    var popular by remember { mutableStateOf<List<PerfumeDto>>(emptyList()) }
+    var newArrivals by remember { mutableStateOf<List<PerfumeDto>>(emptyList()) }
+    var allProducts by remember { mutableStateOf<List<PerfumeDto>>(emptyList()) }
+    var loading by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf<String?>(null) }
 
-    // 3. Display them in a LazyColumn
-    LazyColumn {
-        if (popularProducts.isNotEmpty()) {
-            item { Products(popularProducts, "Popular", navController, cartViewModel) }
+    LaunchedEffect(categoryName) {
+        loading = true
+        error = null
+        try {
+            // Map category to filters
+            val (gender, concentration) = when (categoryName) {
+                "Men Fragrance" -> "men" to null
+                "Women Fragrance" -> "women" to null
+                "Unisex Fragrance" -> "unisex" to null
+                "Eau de Toilette (EDT)" -> null to "EDT"
+                "Eau de Parfum (EDP)" -> null to "EDP"
+                else -> null to null
+            }
+            val list = repo.getPerfumesFiltered(gender = gender, concentration = concentration)
+            allProducts = list
+            popular = list.filter { it.isPopular }
+            newArrivals = list.filter { it.isNewArrival }
+        } catch (e: Exception) {
+            error = e.message ?: "Failed to load products"
+        } finally {
+            loading = false
         }
-        if (newArrivals.isNotEmpty()) {
-            item { Products(newArrivals, "New Arrivals", navController, cartViewModel) }
+    }
+
+    when {
+        loading -> {
+            Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                CircularProgressIndicator(color = White, modifier = Modifier.padding(24.dp))
+            }
         }
-        if (allProducts.isNotEmpty()) {
-            item { Products(allProducts, "All Products", navController, cartViewModel) }
+        error != null -> {
+            Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = error ?: "Error", color = White, modifier = Modifier.padding(24.dp))
+            }
+        }
+        else -> {
+            LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                if (popular.isNotEmpty()) {
+                    item { SectionRow(title = "Popular", items = popular, navController = navController, cartViewModel = cartViewModel) }
+                }
+                if (newArrivals.isNotEmpty()) {
+                    item { SectionRow(title = "New Arrivals", items = newArrivals, navController = navController, cartViewModel = cartViewModel) }
+                }
+                if (allProducts.isNotEmpty()) {
+                    item { SectionRow(title = "All Products", items = allProducts, navController = navController, cartViewModel = cartViewModel) }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SectionRow(title: String, items: List<PerfumeDto>, navController: NavController, cartViewModel: CartViewModel) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text(text = title, color = White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            androidx.compose.material3.TextButton(onClick = { navController.navigate(com.example.learnkotlin.Page.Routes.ALL_PRODUCTS) }) {
+                Text(text = "View All", color = White, fontSize = 14.sp)
+            }
+        }
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            items(items) { p -> PerfumeSmallCard(p, cartViewModel) }
+        }
+    }
+}
+
+private fun mapToProduct(p: PerfumeDto): Product {
+    // Map backend item to local Product used by Cart/Favorites. Use a placeholder image.
+    return Product(
+        id = (p._id ?: p.name).hashCode(),
+        name = p.name,
+        price = p.price,
+        amount = 100,
+        description = p.description ?: "",
+        image = com.example.learnkotlin.R.drawable.all_1
+    )
+}
+
+@Composable
+private fun PerfumeSmallCard(p: PerfumeDto, cartViewModel: CartViewModel) {
+    Card(colors = CardDefaults.cardColors(containerColor = White.copy(alpha = 0.08f))) {
+        Column(modifier = Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            AsyncImage(
+                model = ImageRequest.Builder(androidx.compose.ui.platform.LocalContext.current).data(p.imageUrl).crossfade(true).build(),
+                contentDescription = p.name,
+            )
+            Text(text = p.name, color = White, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 6.dp))
+            Text(text = "$" + String.format("%.2f", p.price), color = White, fontSize = 12.sp)
+            androidx.compose.foundation.layout.Row(
+                modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                val mapped = remember(p._id) { mapToProduct(p) }
+                val isFavorite = com.example.learnkotlin.Components.FavoriteViewModel.isFavorite(mapped)
+                androidx.compose.material3.Icon(
+                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                    contentDescription = "Favorite",
+                    tint = Primary,
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .clickable { com.example.learnkotlin.Components.FavoriteViewModel.toggleFavorite(mapped) }
+                )
+                androidx.compose.material3.Button(
+                    onClick = { cartViewModel.addToCart(mapped) },
+                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Primary)
+                ) {
+                    Text(text = "Add to cart", color = White, fontSize = 12.sp)
+                }
+            }
         }
     }
 }

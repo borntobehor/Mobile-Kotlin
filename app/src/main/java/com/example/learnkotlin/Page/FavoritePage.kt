@@ -59,24 +59,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.learnkotlin.Components.BackAppBar
-import com.example.learnkotlin.Components.FavoriteViewModel
-import com.example.learnkotlin.Components.Product
-import com.example.learnkotlin.Components.productCatalog
 import com.example.learnkotlin.ui.theme.Primary
 import com.example.learnkotlin.ui.theme.Text
 import com.example.learnkotlin.ui.theme.White
-import kotlin.collections.flatten
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritePage(navController: NavController) {
-    val favoriteProductId = FavoriteViewModel.favoriteProductId.value
-    // Flatten the entire catalog, then filter by favorited IDs and ensure unique IDs
-    val favoriteProducts = productCatalog.values
-        .flatMap { it.values }
-        .flatten()
-        .filter { product -> favoriteProductId.contains(product.id) }
-        .distinctBy { it.id }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Primary,
@@ -84,31 +73,13 @@ fun FavoritePage(navController: NavController) {
             BackAppBar(navController, "Favorites")
         }
     ) { it ->
-        if (favoriteProducts.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .padding(top = it.calculateTopPadding())
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text("You haven't added any favorites yet ! <3", color = White)
-            }
-        } else {
-            LazyVerticalGrid(
-                // We want a grid with 2 columns
-                columns = GridCells.Fixed(2),
-                modifier = Modifier.padding(top = it.calculateTopPadding()),
-                // Add padding around the grid and between items
-                contentPadding = PaddingValues(20.dp),
-                horizontalArrangement = Arrangement.spacedBy(20.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                // The 'items' extension for grids works just like for LazyColumn
-                items(favoriteProducts, key = { it.id }) { product ->
-                    // No Box or weights needed. LazyVerticalGrid handles the alignment.
-                    ProductCard(product = product, name = "Favorites")
-                }
-            }
+        Box(
+            modifier = Modifier
+                .padding(top = it.calculateTopPadding())
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text("Favorites coming soon", color = White)
         }
     }
 }
